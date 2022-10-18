@@ -1,0 +1,3 @@
+${PODS_ROOT}/Target Support Files/Pods-eshop-eshopUITests/Pods-eshop-eshopUITests-frameworks.sh
+${PODS_XCFRAMEWORKS_BUILD_DIR}/MarketingCloud-SFMCSdk/SFMCSDK.framework/SFMCSDK
+${PODS_XCFRAMEWORKS_BUILD_DIR}/MarketingCloudSDK/MarketingCloudSDK.framework/MarketingCloudSDK
