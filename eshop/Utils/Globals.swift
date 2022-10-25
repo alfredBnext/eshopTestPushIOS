@@ -9,7 +9,7 @@ import Foundation
 
 public struct Globals{
     public static let Account = "heinekenintlamer"
-    public static let Dateset = "mexico"
+    public static let Dateset = "development"
     
     public static let Categories: [CategoryModel] = [
         CategoryModel(id: 1, name: "Cerveza", products: [

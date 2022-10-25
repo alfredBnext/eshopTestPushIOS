@@ -42,14 +42,19 @@ struct eshopApp: App {
     #if DEBUG
         evergage.logLevel = EVGLogLevel.off
     #endif
-        evergage.userId = "96b01faf-be94-4643-8355-559f0d5395ded"
-        
-        evergage.start { (clientConfigurationBuilder) in
-            clientConfigurationBuilder.account = Globals.Account
-            clientConfigurationBuilder.dataset = Globals.Dateset
-            clientConfigurationBuilder.usePushNotifications = false
-            clientConfigurationBuilder.useDesignMode = true
+        let evergageId = UserDefaults.standard.string(forKey: "EvergageId")
+        if(!(evergageId ?? "").isEmpty){
+            evergage.userId = evergageId!
+            
+            evergage.start { (clientConfigurationBuilder) in
+                clientConfigurationBuilder.account = Globals.Account
+                clientConfigurationBuilder.dataset = Globals.Dateset
+                clientConfigurationBuilder.usePushNotifications = false
+                clientConfigurationBuilder.useDesignMode = true
+            }
         }
+        
+        
     }
         
 }
@@ -69,7 +74,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, MarketingCloudSDKURLHandling
     let analytics = true
     
     @discardableResult
-        func configureMarketingCloudSDK() -> Bool {
+    func configureMarketingCloudSDK(contactKey: String) -> Bool {
             // Use the builder method to configure the SDK for usage. This gives you the maximum flexibility in SDK configuration.
             // The builder lets you configure the SDK parameters at runtime.
             let builder = MarketingCloudSDKConfigBuilder()
@@ -79,6 +84,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, MarketingCloudSDKURLHandling
                 .sfmc_setInboxEnabled(inbox as NSNumber)
                 .sfmc_setLocationEnabled(location as NSNumber)
                 .sfmc_setAnalyticsEnabled(analytics as NSNumber)
+                .sfmc_setDelayRegistration(untilContactKeyIsSet: true)
                 .sfmc_build()!
             
             var success = false
@@ -139,7 +145,7 @@ class AppDelegate: NSObject, UIApplicationDelegate, MarketingCloudSDKURLHandling
                     }
                 }
             
-            MarketingCloudSDK.sharedInstance().sfmc_setContactKey("Alfredo1998")
+            MarketingCloudSDK.sharedInstance().sfmc_setContactKey(contactKey)
             return success
         }
     
@@ -171,17 +177,21 @@ class AppDelegate: NSObject, UIApplicationDelegate, MarketingCloudSDKURLHandling
 
         application.registerForRemoteNotifications()
         
-        self.configureMarketingCloudSDK()
+        let evergageId = UserDefaults.standard.string(forKey: "EvergageId")
+        if(!(evergageId ?? "").isEmpty){
+            self.configureMarketingCloudSDK(contactKey: evergageId!)
+        }
+        
         
         return true
       }
     
     func applicationProtectedDataDidBecomeAvailable(_ application: UIApplication) {
-            if(MarketingCloudSDK.sharedInstance().sfmc_isReady() == false)
-            {
-                self.configureMarketingCloudSDK()
-            }
+        let evergageId = UserDefaults.standard.string(forKey: "EvergageId")
+        if(!(evergageId ?? "").isEmpty){
+            self.configureMarketingCloudSDK(contactKey: evergageId!)
         }
+    }
     
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable: Any]) {
       // If you are receiving a notification message while your app is in the background,

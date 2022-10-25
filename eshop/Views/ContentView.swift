@@ -10,23 +10,26 @@ import Evergage
 import AppTrackingTransparency
 
 struct ContentView: View {
-    @State private var searchText: String = ""
+    @State var searchText: String = "GLP484|"
     
     init(){
+        let evergageId = UserDefaults.standard.string(forKey: "EvergageId");
+        
+        if (!(evergageId ?? "").isEmpty){
+            _searchText = State(initialValue: evergageId!);
+        }
     }
     
     var body: some View {
         NavigationView {
             VStack{
-                NavigationLink(destination: CategoriesView()) {
-                    Text("CATEGORIA")
-                }
                 HStack {
                     TextField(
-                        "Buscar",
+                        "Evergage user id | Marketing contact key",
                         text: $searchText
-                    ).onSubmit {
-                        print("Busco: \(searchText)")
+                    ).onSubmit {//searchText
+                        UserDefaults.standard.set(searchText, forKey: "EvergageId")
+                        print(UserDefaults.standard.string(forKey: "EvergageId")!)
                     }.padding()
                 }
                 Button(action: {
@@ -34,7 +37,7 @@ struct ContentView: View {
                     print(fcmToken!)
                     UIPasteboard.general.string = fcmToken!
                 }, label: {
-                    Text("copiar Firebase")
+                    Text("copy Firebase Id")
                 })
             }
             
